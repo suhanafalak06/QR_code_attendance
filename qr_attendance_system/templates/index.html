@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Smart Attendance System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2E86AB;
+            --secondary: #A23B72;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --info: #3498DB;
+            --light: #ECF0F1;
+            --dark: #2C3E50;
+            --white: #FFFFFF;
+            --accent: #FF6B6B;
+            --mint: #26D0CE;
+            --purple: #A8E6CF;
+            --yellow: #FFD93D;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light) 0%, #D5E4F0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            border-right: 1px solid var(--light);
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--light);
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-header h2 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, var(--light) 0%, white 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .qr-display {
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #E67E22 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #C0392B 100%);
+            color: white;
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            .action-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .action-card {
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .scan-card {
+            background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);
+        }
+
+        .manual-card {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--danger) 100%);
+        }
+
+        .action-card .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .action-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .attendance-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .table-header h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light);
+        }
+
+        th {
+            background: var(--light);
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: var(--light);
+            transition: background 0.3s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.today {
+            background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);
+        }
+
+        .stat-card.week {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+        }
+
+        .stat-card.method {
+            background: linear-gradient(135deg, var(--warning) 0%, #E67E22 100%);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: -30px -30px 20px -30px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(46, 134, 171, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .success-message, .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            text-align: center;
+            animation: messageSlideIn 0.5s ease;
+            color: white;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, var(--danger) 0%, #C0392B 100%);
+        }
+
+        @keyframes messageSlideIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-display:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .status-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .status-item {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .status-unavailable {
+            background: linear-gradient(135deg, var(--danger) 0%, #C0392B 100%);
+            color: white;
+        }
+
+        #qrCodeCanvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+        }
+
+        .count-display {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--primary);
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Smart Attendance System</h1>
+        <p>Advanced QR Code & Manual Entry System</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="qr-generation">🎯 QR Generation</div>
+            <div class="tab" data-tab="scanning">📱 Scanning & Entry</div>
+            <div class="tab" data-tab="attendance">📋 Attendance View</div>
+            <div class="tab" data-tab="statistics">📊 Statistics</div>
+        </div>
+
+        <div class="tab-content active" id="qr-generation">
+            <div class="section-header">
+                <h2>🎯 Generate QR Code for Class</h2>
+            </div>
+            
+            <div class="cards-container">
+                <div class="info-card">
+                    <h3>📚 Class Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">🏫 Class:</span>
+                        <span>Computer Science 101</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🚪 Room:</span>
+                        <span>Room 205</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">👨‍🏫 Instructor:</span>
+                        <span>Dr. Smith</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏰ Time:</span>
+                        <span id="currentTimeDisplay">09:00</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateQR()">
+                        🔄 GENERATE QR CODE
+                    </button>
+                </div>
+
+                <!-- Update the QR code display section -->
+                <div class="qr-display" id="qrCodeContainer">
+                    <div class="placeholder">
+                        <span>📱</span>
+                        <p>Click "Generate QR Code" to create a scannable code</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="scanning">
+            <div class="section-header">
+                <h2>📱 Scan QR Code or Manual Entry</h2>
+            </div>
+
+            <div class="action-cards">
+                <div class="action-card scan-card">
+                    <div class="icon">📱</div>
+                    <h3>Scan QR Code</h3>
+                    <p style="margin-bottom: 20px;">Upload image file with QR code</p>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="qrImageInput" accept="image/*">
+                        <div class="file-input-display">📷 Scan from File</div>
+                    </div>
+                </div>
+
+                <div class="action-card manual-card">
+                    <div class="icon">✏️</div>
+                    <h3>Manual Entry</h3>
+                    <p style="margin-bottom: 20px;">Enter student details manually</p>
+                    <button class="btn btn-success" onclick="showManualEntryModal()">➕ Add Student</button>
+                </div>
+            </div>
+
+            <div class="status-indicators">
+                <div class="status-item status-available">
+                    <div>✅ QR Generation</div>
+                    <div style="font-size: 0.9em;">Available</div>
+                </div>
+                <div class="status-item status-available">
+                    <div>📱 QR Scanning</div>
+                    <div style="font-size: 0.9em;">Available</div>
+                </div>
+                <div class="status-item status-available">
+                    <div>📷 Camera Support</div>
+                    <div style="font-size: 0.9em;">Browser Based</div>
+                </div>
+                <div class="status-item status-available">
+                    <div>🔔 Notifications</div>
+                    <div style="font-size: 0.9em;">Web Based</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="attendance">
+            <div class="section-header">
+                <h2>📋 Today's Attendance</h2>
+            </div>
+
+            <div class="count-display" id="attendanceCount">
+                📊 Today's Attendance: 0 students
+            </div>
+
+            <div class="attendance-table">
+                <div class="table-header">
+                    <h3>📅 <span id="currentDate"></span></h3>
+                    <button class="btn btn-warning" onclick="exportToExcel()" style="margin-top: 10px;">
+                        📊 Export Excel
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>⏰ Time</th>
+                                <th>🆔 Student ID</th>
+                                <th>👤 Name</th>
+                                <th>✅ Status</th>
+                                <th>📋 Method</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-primary" onclick="fetchAttendance()">🔄 Refresh</button>
+                <button class="btn btn-danger" onclick="clearAttendanceView()" style="margin-left: 10px;">🗑️ Clear View</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="statistics">
+            <div class="section-header">
+                <h2>📊 Attendance Statistics</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card today">
+                    <div>📅 Today</div>
+                    <div class="stat-number" id="todayCount">0</div>
+                    <div>students</div>
+                </div>
+                <div class="stat-card week">
+                    <div>📆 This Week</div>
+                    <div class="stat-number" id="weekCount">0</div>
+                    <div>total</div>
+                </div>
+                <div class="stat-card.method">
+                    <div>📱 QR Scans</div>
+                    <div class="stat-number" id="qrPercentage">0%</div>
+                    <div>of total</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>🕒 Recent Activity</h3>
+                <div id="recentActivity" style="max-height: 300px; overflow-y: auto; margin-top: 15px;">
+                    <p>🎯 System started successfully</p>
+                    <p>📊 Ready for attendance marking</p>
+                    <p>✅ All features available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="manualEntryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✨ Student Information</h3>
+            </div>
+            <form id="manualEntryForm">
+                <div class="form-group">
+                    <label class="form-label">🆔 Student ID:</label>
+                    <input type="text" class="form-input" id="studentId" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">👤 Student Name:</label>
+                    <input type="text" class="form-input" id="studentName" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-danger" onclick="closeManualEntryModal()">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">✅ Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to store current QR data for validation
+        let currentQRData = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                initializeApp();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showErrorMessage('Failed to initialize application');
+            }
+        });
+
+        function initializeApp() {
+            updateCurrentDate();
+            updateCurrentTime();
+            fetchAttendance();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    try {
+                        const targetTab = this.getAttribute('data-tab');
+                        switchTab(targetTab);
+                        if (targetTab === 'attendance') {
+                            fetchAttendance();
+                        }
+                    } catch (error) {
+                        console.error('Tab switching error:', error);
+                    }
+                });
+            });
+
+            const form = document.getElementById('manualEntryForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addManualAttendance();
+                });
+            }
+
+            const qrInput = document.getElementById('qrImageInput');
+            if (qrInput) {
+                qrInput.addEventListener('change', function(event) {
+                    handleQRImage(event);
+                });
+            }
+        }
+
+        async function fetchAttendance() {
+            try {
+                const response = await fetch('/api/attendance');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch attendance data');
+                }
+                const data = await response.json();
+                updateAttendanceDisplay(data);
+                updateStatistics(data);
+            } catch (error) {
+                console.error('Error fetching attendance:', error);
+                showErrorMessage('Failed to load attendance data');
+            }
+        }
+
+        function updateAttendanceDisplay(attendanceData) {
+            const tableBody = document.getElementById('attendanceTableBody');
+            if (!tableBody) return;
+            tableBody.innerHTML = ''; // Clear existing records
+
+            if (attendanceData && attendanceData.length > 0) {
+                attendanceData.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.time}</td>
+                        <td>${record.studentId}</td>
+                        <td>${record.studentName}</td>
+                        <td>${record.status}</td>
+                        <td>${record.method.toUpperCase()}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                document.getElementById('attendanceCount').textContent = `📊 Today's Attendance: ${attendanceData.length} students`;
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance records found.</td></tr>`;
+                document.getElementById('attendanceCount').textContent = `📊 Today's Attendance: 0 students`;
+            }
+        }
+
+        function clearAttendanceView() {
+            const tableBody = document.getElementById('attendanceTableBody');
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">View cleared. Refresh to see data.</td></tr>`;
+                document.getElementById('attendanceCount').textContent = `📊 Today's Attendance: 0 students`;
+            }
+            showSuccessMessage('Attendance view cleared!');
+        }
+
+        function updateStatistics(attendanceData) {
+            if (!attendanceData) return;
+            
+            const todayCount = attendanceData.length;
+            const qrScans = attendanceData.filter(rec => rec.method === 'qr').length;
+            const qrPercentage = todayCount > 0 ? ((qrScans / todayCount) * 100).toFixed(0) : 0;
+            
+            document.getElementById('todayCount').textContent = todayCount;
+            // Simplified for this example, 'This Week' and 'QR Scans'
+            document.getElementById('weekCount').textContent = 'N/A'; // Placeholder
+            document.getElementById('qrPercentage').textContent = `${qrPercentage}%`;
+        }
+
+        function updateCurrentDate() {
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                dateElement.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+        }
+
+        function updateCurrentTime() {
+            const timeElement = document.getElementById('currentTimeDisplay');
+            if (timeElement) {
+                timeElement.textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            }
+        }
+
+        // Update your generateQR function
+        async function generateQR() {
+            try {
+                const response = await fetch('/api/generate_qr', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showMessage('Error: ' + data.error, 'error');
+                    return;
+                }
+                
+                const qrData = data.qr_data;
+                
+                // Generate QR Code using qrcode-generator library
+                const qr = qrcode(0, 'M');
+                qr.addData(JSON.stringify(qrData));
+                qr.make();
+                
+                // Create QR code as image
+                const qrCodeImg = qr.createImgTag(4, 8);
+                
+                // Find the QR display container
+                const qrContainer = document.querySelector('.qr-display') || 
+                                   document.getElementById('qrCodeContainer') || 
+                                   document.querySelector('[data-qr-display]');
+                
+                if (qrContainer) {
+                    qrContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <h3 style="color: #2E86AB; margin-bottom: 15px;">📱 Scannable QR Code</h3>
+                            <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                ${qrCodeImg}
+                            </div>
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                                <p><strong>✅ QR Code Generated Successfully!</strong></p>
+                                <p><strong>QR ID:</strong> ${qrData.id}</p>
+                                <p><strong>Class:</strong> ${qrData.class_name}</p>
+                                <p><strong>Room:</strong> ${qrData.classroom}</p>
+                                <p><strong>Instructor:</strong> ${qrData.instructor}</p>
+                                <p><strong>⏰ Expires:</strong> ${new Date(qrData.expiry).toLocaleString()}</p>
+                            </div>
+                            <div style="margin-top: 15px; padding: 10px; background: #e8f4f8; border-radius: 5px;">
+                                <small><strong>📲 Students can scan this QR code with their phones to mark attendance!</strong></small>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Store QR data globally for manual entry
+                window.currentQRData = qrData;
+                
+                showMessage('QR Code generated successfully! Students can now scan it.', 'success');
+                
+            } catch (error) {
+                showMessage('Error generating QR code: ' + error.message, 'error');
+                console.error('QR Generation Error:', error);
+            }
+        }
+
+        // Helper function to show messages
+        function showMessage(message, type) {
+            // You can implement this based on your existing message system
+            console.log(`${type}: ${message}`);
+        }
+
+        async function handleQRImage(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img, 0, 0, img.width, img.height);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        try {
+                            const qrData = JSON.parse(code.data);
+                            // We need a dummy student ID and name for this example
+                            const studentId = 'S' + Math.floor(Math.random() * 1000);
+                            const studentName = 'Student ' + Math.floor(Math.random() * 100);
+                            recordAttendance(studentId, studentName, 'qr', qrData.id);
+                        } catch (error) {
+                            showErrorMessage('Invalid QR code format.');
+                        }
+                    } else {
+                        showErrorMessage('No QR code found in the image.');
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        async function recordAttendance(studentId, studentName, method, qrId = null) {
+            try {
+                const response = await fetch('/api/attend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId, studentName, method, qrId })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showSuccessMessage(result.message);
+                    addToRecentActivity(`✅ Student ${studentName} (${studentId}) marked present via ${method.toUpperCase()}`);
+                    fetchAttendance(); // Refresh attendance list
+                } else {
+                    showErrorMessage(result.error);
+                }
+            } catch (error) {
+                console.error('Attendance recording error:', error);
+                showErrorMessage('Failed to record attendance: ' + error.message);
+            }
+        }
+
+        async function addManualAttendance() {
+            const studentId = document.getElementById('studentId').value;
+            const studentName = document.getElementById('studentName').value;
+            
+            if (studentId && studentName) {
+                await recordAttendance(studentId, studentName, 'manual');
+                closeManualEntryModal();
+            } else {
+                showErrorMessage('Please enter both student ID and name.');
+            }
+        }
+
+        function showManualEntryModal() {
+            const modal = document.getElementById('manualEntryModal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.getElementById('studentId').focus();
+            }
+        }
+
+        function closeManualEntryModal() {
+            const modal = document.getElementById('manualEntryModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('manualEntryForm').reset();
+            }
+        }
+        
+        function exportToExcel() {
+            window.location.href = '/api/export_excel';
+            showSuccessMessage('Exporting attendance data...');
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            const targetContent = document.getElementById(tabName);
+            const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
+            
+            if (targetContent && targetTab) {
+                targetContent.classList.add('active');
+                targetTab.classList.add('active');
+            }
+        }
+
+        function showSuccessMessage(message) {
+            const msgEl = document.createElement('div');
+            msgEl.className = 'success-message';
+            msgEl.textContent = message;
+            document.body.appendChild(msgEl);
+            setTimeout(() => {
+                msgEl.remove();
+            }, 3000);
+        }
+
+        function showErrorMessage(message) {
+            const msgEl = document.createElement('div');
+            msgEl.className = 'error-message';
+            msgEl.textContent = message;
+            document.body.appendChild(msgEl);
+            setTimeout(() => {
+                msgEl.remove();
+            }, 3000);
+        }
+
+        function addToRecentActivity(log) {
+            const activityBox = document.getElementById('recentActivity');
+            if (activityBox) {
+                const p = document.createElement('p');
+                p.textContent = log;
+                activityBox.prepend(p);
+                // Keep the list from getting too long
+                while (activityBox.children.length > 15) {
+                    activityBox.removeChild(activityBox.lastChild);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

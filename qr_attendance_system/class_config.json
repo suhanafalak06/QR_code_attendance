@@ -1,0 +1,8 @@
+{
+  "class_name": "Computer Science 101",
+  "classroom_number": "Room 205",
+  "class_time": "09:00",
+  "instructor_name": "Dr. Smith",
+  "qr_expiry_minutes": 30,
+  "auto_refresh_interval": 60
+}
