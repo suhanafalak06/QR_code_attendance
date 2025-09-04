@@ -1,0 +1,384 @@
+{
+  "aiml_5th_sem_316": {
+    "id": "aiml_5th_sem_316",
+    "name": "AIML - 5th sem [room-316]",
+    "department": "Computer Science and Engineering",
+    "program": "B.Tech AIML",
+    "academicYear": "2024-25",
+    "description": "AIML 5th Semester Timetable - Room 316",
+    "schedule": {
+      "monday": {
+        "8:30-9:30": {
+          "subject": "Research methodology and IPR",
+          "teacher": "Prof.Meghanendra(N6)",
+          "room": "316",
+          "type": "lecture"
+        },
+        "9:30-10:30": {
+          "subject": "Theory of Computations",
+          "teacher": "Prof.Sriram Pal",
+          "room": "316",
+          "type": "lecture"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "Software Engineering",
+          "teacher": "Prof.Jyothi Naranjana",
+          "room": "316",
+          "type": "lecture"
+        },
+        "11:45-12:45": {
+          "subject": "Computer Networks",
+          "teacher": "Prof.Dhivanis MV",
+          "room": "316",
+          "type": "lecture"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "2:30-3:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "3:30-4:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "4:30-5:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        }
+      },
+      "tuesday": {
+        "8:30-9:30": {
+          "subject": "Theory of Computations",
+          "teacher": "Prof.Sriram Pal",
+          "room": "316",
+          "type": "lecture"
+        },
+        "9:30-10:30": {
+          "subject": "Research methodology and IPR",
+          "teacher": "Prof.Meghanendra",
+          "room": "316",
+          "type": "lecture"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "Computer Vision",
+          "teacher": "Dr.S.P Pradeep Kumar",
+          "room": "316",
+          "type": "lecture"
+        },
+        "11:45-12:45": {
+          "subject": "Software Engineering",
+          "teacher": "Prof.Jyothi Naranjana",
+          "room": "316",
+          "type": "lecture"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Environmental studies and E-Waste management",
+          "teacher": "Prof.Priyanka CKN",
+          "room": "316",
+          "type": "lecture"
+        },
+        "2:30-3:30": {
+          "subject": "Data Visualization",
+          "teacher": "Prof.Nihamai M",
+          "room": "316",
+          "type": "lecture"
+        },
+        "3:30-4:30": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        },
+        "4:30-5:30": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        }
+      },
+      "wednesday": {
+        "8:30-9:30": {
+          "subject": "Computer Vision",
+          "teacher": "Dr.S.P Pradeep Kumar",
+          "room": "316",
+          "type": "lecture"
+        },
+        "9:30-10:30": {
+          "subject": "Computer Networks",
+          "teacher": "Prof.Dhivanis MV",
+          "room": "316",
+          "type": "lecture"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "Software Engineering",
+          "teacher": "Prof.Jyothi Naranjana",
+          "room": "316",
+          "type": "lecture"
+        },
+        "11:45-12:45": {
+          "subject": "Theory of Computations",
+          "teacher": "Prof.Sriram Pal",
+          "room": "316",
+          "type": "lecture"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "2:30-3:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "3:30-4:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "4:30-5:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        }
+      },
+      "thursday": {
+        "8:30-9:30": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        },
+        "9:30-10:30": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "Computer vision",
+          "teacher": "Dr.S.P Pradeep Kumar",
+          "room": "316",
+          "type": "lecture"
+        },
+        "11:45-12:45": {
+          "subject": "Computer Networks",
+          "teacher": "Prof.Dhivanis MV",
+          "room": "316",
+          "type": "lecture"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "2:30-3:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "3:30-4:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "4:30-5:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        }
+      },
+      "friday": {
+        "8:30-9:30": {
+          "subject": "Software Engineering",
+          "teacher": "Prof.Jyothi Naranjana",
+          "room": "316",
+          "type": "lecture"
+        },
+        "9:30-10:30": {
+          "subject": "Research methodology and IPR",
+          "teacher": "Prof.Meghanendra",
+          "room": "316",
+          "type": "lecture"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        },
+        "11:45-12:45": {
+          "subject": "lab",
+          "teacher": "",
+          "room": "316",
+          "type": "lab"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "2:30-3:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "3:30-4:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "4:30-5:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        }
+      },
+      "saturday": {
+        "8:30-9:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "9:30-10:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "10:30-10:45": {
+          "subject": "TEA BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "10:45-11:45": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "11:45-12:45": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "12:45-1:30": {
+          "subject": "LUNCH BREAK",
+          "teacher": "",
+          "room": "",
+          "type": "break"
+        },
+        "1:30-2:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "2:30-3:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "3:30-4:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        },
+        "4:30-5:30": {
+          "subject": "Free",
+          "teacher": "",
+          "room": "",
+          "type": "free"
+        }
+      }
+    }
+  }
+}

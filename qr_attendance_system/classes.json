@@ -1,0 +1,65 @@
+{
+  "research_methodology": {
+    "id": "research_methodology",
+    "subject": "Research methodology and IPR",
+    "instructor": "Prof.Meghanendra(N6)",
+    "description": "Research methods and Intellectual Property Rights",
+    "credits": 3,
+    "type": "theory",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "theory_of_computations": {
+    "id": "theory_of_computations",
+    "subject": "Theory of Computations",
+    "instructor": "Prof.Sriram Pal",
+    "description": "Formal languages, automata theory, and computational complexity",
+    "credits": 4,
+    "type": "theory",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "software_engineering": {
+    "id": "software_engineering",
+    "subject": "Software Engineering",
+    "instructor": "Prof.Jyothi Naranjana",
+    "description": "Software development lifecycle and engineering practices",
+    "credits": 3,
+    "type": "theory",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "computer_networks": {
+    "id": "computer_networks",
+    "subject": "Computer Networks",
+    "instructor": "Prof.Dhivanis MV",
+    "description": "Network protocols, architectures, and communication systems",
+    "credits": 4,
+    "type": "theory",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "computer_vision": {
+    "id": "computer_vision",
+    "subject": "Computer Vision",
+    "instructor": "Dr.S.P Pradeep Kumar",
+    "description": "Image processing, pattern recognition, and machine vision",
+    "credits": 4,
+    "type": "both",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "environmental_studies": {
+    "id": "environmental_studies",
+    "subject": "Environmental studies and E-Waste management",
+    "instructor": "Prof.Priyanka CKN",
+    "description": "Environmental science and electronic waste management",
+    "credits": 2,
+    "type": "theory",
+    "timetable_id": "aiml_5th_sem_316"
+  },
+  "data_visualization": {
+    "id": "data_visualization",
+    "subject": "Data Visualization",
+    "instructor": "Prof.Nihamai M",
+    "description": "Visual representation of data and information design",
+    "credits": 3,
+    "type": "both",
+    "timetable_id": "aiml_5th_sem_316"
+  }
+}

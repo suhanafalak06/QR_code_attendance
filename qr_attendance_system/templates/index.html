@@ -539,6 +539,41 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Timetable specific styles */
+        .schedule-cell {
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-cell:hover {
+            background-color: #d4edda !important;
+            transform: scale(1.02);
+        }
+
+        #timetableTable th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 12px 8px;
+        }
+
+        #timetableTable td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .timetable-header {
+            background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -550,6 +585,9 @@
     <div class="container">
         <div class="tabs">
             <div class="tab active" data-tab="qr-generation">🎯 QR Generation</div>
+            <div class="tab" data-tab="class-management">📚 Class Management</div>
+            <div class="tab" data-tab="timetable">📅 Timetable</div>
+            <div class="tab" data-tab="smart-teaching">🎓 Smart Teaching</div>
             <div class="tab" data-tab="scanning">📱 Scanning & Entry</div>
             <div class="tab" data-tab="attendance">📋 Attendance View</div>
             <div class="tab" data-tab="statistics">📊 Statistics</div>
@@ -594,6 +632,221 @@
             </div>
         </div>
 
+        <div class="tab-content" id="class-management">
+            <div class="section-header">
+                <h2>📚 AIML Class Management</h2>
+                <p>Manage classes for the AIML 5th semester program</p>
+            </div>
+
+            <div class="action-cards">
+                <div class="action-card" style="background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);">
+                    <div class="icon">➕</div>
+                    <h3>Add AIML Class</h3>
+                    <p style="margin-bottom: 20px;">Add a new class for AIML students</p>
+                    <button class="btn btn-success" onclick="showAddAIMLClassModal()">Add New Class</button>
+                </div>
+                <div class="action-card" style="background: linear-gradient(135deg, var(--primary) 0%, #2E86AB 100%);">
+                    <div class="icon">📝</div>
+                    <h3>Manage Classes</h3>
+                    <p style="margin-bottom: 20px;">Edit or delete existing AIML classes</p>
+                    <button class="btn btn-primary" onclick="refreshAIMLClassList()">View All Classes</button>
+                </div>
+                <div class="action-card" style="background: linear-gradient(135deg, var(--info) 0%, #5DADE2 100%);">
+                    <div class="icon">⚡</div>
+                    <h3>Initialize Default</h3>
+                    <p style="margin-bottom: 20px;">Auto-create all AIML classes</p>
+                    <button class="btn btn-info" onclick="initializeAIMLClasses()">Initialize Classes</button>
+                </div>
+            </div>
+
+            <div class="cards-container">
+                <div class="info-card">
+                    <h3>� AIML Program Statistics</h3>
+                    <div class="status-indicators">
+                        <div class="status-item status-available">
+                            <div>Total Classes</div>
+                            <div id="totalAIMLClasses">0</div>
+                        </div>
+                        <div class="status-item" style="background: linear-gradient(135deg, var(--primary) 0%, #2E86AB 100%); color: white;">
+                            <div>Active Today</div>
+                            <div id="todayAIMLClasses">0</div>
+                        </div>
+                        <div class="status-item" style="background: linear-gradient(135deg, var(--info) 0%, #5DADE2 100%); color: white;">
+                            <div>This Week</div>
+                            <div id="weekAIMLClasses">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>� AIML Program Info</h3>
+                    <div id="aimlQuickInfo">
+                        <div class="info-item">
+                            <span class="info-label">🏢 Department:</span>
+                            <span>Computer Science and Engineering</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📖 Program:</span>
+                            <span>B.Tech AIML</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📅 Semester:</span>
+                            <span>5th Semester</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">🚪 Room:</span>
+                            <span>316</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📚 Total Subjects:</span>
+                            <span id="totalSubjects">6</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="attendance-table">
+                <div class="table-header">
+                    <h3>📋 AIML Classes</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>📚 Subject</th>
+                                <th>👨‍🏫 Instructor</th>
+                                <th>📝 Description</th>
+                                <th>🕒 Credits</th>
+                                <th>⚙️ Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aimlClassTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px;">
+                                    Click "Initialize Classes" to create AIML classes automatically
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="timetable">
+            <div class="section-header">
+                <h2>📅 Timetable Management</h2>
+                <p>Create and manage multiple timetables for different departments/programs</p>
+            </div>
+
+            <div class="action-cards">
+                <div class="action-card" style="background: linear-gradient(135deg, var(--success) 0%, #27AE60 100%);">
+                    <div class="icon">➕</div>
+                    <h3>Create Timetable</h3>
+                    <p style="margin-bottom: 20px;">Create a new timetable for department/program</p>
+                    <button class="btn btn-success" onclick="showCreateTimetableModal()">Create New</button>
+                </div>
+
+                <div class="action-card" style="background: linear-gradient(135deg, var(--info) 0%, var(--primary) 100%);">
+                    <div class="icon">📝</div>
+                    <h3>Manage Timetables</h3>
+                    <p style="margin-bottom: 20px;">Edit existing timetables</p>
+                    <select id="timetableSelector" onchange="loadSelectedTimetable()" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="">Select Timetable</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="timetableContainer" style="margin-top: 30px;">
+                <div class="attendance-table">
+                    <div class="table-header">
+                        <h3 id="timetableTitle">📋 Select a Timetable to View</h3>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-primary" onclick="editTimetableCell()" id="editModeBtn" style="display: none;">✏️ Edit Mode</button>
+                            <button class="btn btn-success" onclick="saveTimetable()" id="saveBtn" style="display: none;">💾 Save Changes</button>
+                            <button class="btn btn-danger" onclick="cancelEdit()" id="cancelBtn" style="display: none;">❌ Cancel</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="timetableTable" style="font-size: 0.9em;">
+                            <thead>
+                                <tr>
+                                    <th>Day/Time</th>
+                                    <th>8:30-9:30</th>
+                                    <th>9:30-10:30</th>
+                                    <th>10:30-10:45</th>
+                                    <th>10:45-11:45</th>
+                                    <th>11:45-12:45</th>
+                                    <th>12:45-1:30</th>
+                                    <th>1:30-2:30</th>
+                                    <th>2:30-3:30</th>
+                                    <th>3:30-4:30</th>
+                                    <th>4:30-5:30</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timetableBody">
+                                <tr><td colspan="11" style="text-align: center; padding: 40px;">Select a timetable from the dropdown above</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="smart-teaching">
+            <div class="section-header">
+                <h2>🎓 Smart Teaching - Use Your Timetable</h2>
+            </div>
+
+            <div class="cards-container">
+                <div class="info-card">
+                    <h3>📅 Current Class Status</h3>
+                    <div id="currentClassInfo">
+                        <div style="text-align: center; padding: 20px;">
+                            <p>Select a timetable to see current class information</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>⚙️ Quick Settings</h3>
+                    <div class="form-group">
+                        <label class="form-label">📚 Select Your Timetable:</label>
+                        <select class="form-input" id="teacherTimetableSelect" onchange="loadCurrentClass()">
+                            <option value="">Choose a timetable...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="generateFromTimetable()" id="generateTimetableQR" disabled>
+                            🎯 Generate QR for Current Class
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn btn-info" onclick="refreshCurrentClass()">
+                            🔄 Refresh Current Time
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cards-container" id="timetableQRSection" style="display: none;">
+                <div class="info-card">
+                    <h3>📋 Class Details</h3>
+                    <div id="selectedClassDetails">
+                        <!-- Class details will be populated here -->
+                    </div>
+                </div>
+
+                <div class="qr-display" id="timetableQRDisplay">
+                    <h3>🎯 QR Code for Current Class</h3>
+                    <div id="timetableQRCodeContainer">
+                        <!-- QR code will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="tab-content" id="scanning">
             <div class="section-header">
                 <h2>📱 Scan QR Code or Manual Entry</h2>
@@ -608,6 +861,15 @@
                         <input type="file" class="file-input" id="qrImageInput" accept="image/*">
                         <div class="file-input-display">📷 Scan from File</div>
                     </div>
+                        <div style="margin-top:20px;">
+                            <button class="btn btn-primary" onclick="startCameraScan()">🎥 Scan with Camera</button>
+                        </div>
+                        <div id="cameraScanContainer" style="display:none; margin-top:20px; text-align:center;">
+                            <video id="qrVideo" width="320" height="240" style="border-radius:10px; border:2px solid #2E86AB;"></video>
+                            <canvas id="qrCanvas" style="display:none;"></canvas>
+                            <div id="cameraScanStatus" style="margin-top:10px; color:#2E86AB;"></div>
+                            <button class="btn btn-danger" onclick="stopCameraScan()" style="margin-top:10px;">❌ Stop Camera</button>
+                        </div>
                 </div>
 
                 <div class="action-card manual-card">
@@ -733,9 +995,140 @@
         </div>
     </div>
 
+    <div class="modal" id="addClassModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📚 Add New Class</h3>
+            </div>
+            <form id="addClassForm">
+                <div class="form-group">
+                    <label class="form-label">📚 Class Name:</label>
+                    <input type="text" class="form-input" id="className" required placeholder="e.g., Computer Science 101">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🚪 Room Number:</label>
+                    <input type="text" class="form-input" id="roomNumber" required placeholder="e.g., Room 205">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">👨‍🏫 Instructor Name:</label>
+                    <input type="text" class="form-input" id="instructorName" required placeholder="e.g., Dr. Smith">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🕒 Schedule:</label>
+                    <input type="text" class="form-input" id="classSchedule" required placeholder="e.g., Mon-Wed-Fri 9:00 AM">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📝 Description (Optional):</label>
+                    <input type="text" class="form-input" id="classDescription" placeholder="e.g., Introduction to Programming">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-danger" onclick="closeAddClassModal()">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">✅ Add Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="addAIMLClassModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📚 Add AIML Class</h3>
+            </div>
+            <form id="addAIMLClassForm">
+                <div class="form-group">
+                    <label class="form-label">📚 Subject Name:</label>
+                    <input type="text" class="form-input" id="aimlSubjectName" required placeholder="e.g., Computer Vision">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">👨‍🏫 Instructor:</label>
+                    <input type="text" class="form-input" id="aimlInstructor" required placeholder="e.g., Dr.S.P Pradeep Kumar">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📝 Subject Description:</label>
+                    <input type="text" class="form-input" id="aimlDescription" placeholder="e.g., Introduction to Computer Vision and Image Processing">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🕒 Credits:</label>
+                    <select class="form-input" id="aimlCredits">
+                        <option value="3">3 Credits</option>
+                        <option value="4">4 Credits</option>
+                        <option value="2">2 Credits</option>
+                        <option value="1">1 Credit</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📖 Subject Type:</label>
+                    <select class="form-input" id="aimlSubjectType">
+                        <option value="theory">Theory</option>
+                        <option value="practical">Practical/Lab</option>
+                        <option value="both">Theory + Practical</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-danger" onclick="closeAddAIMLClassModal()">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">✅ Add Class</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="createTimetableModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>📅 Create New Timetable</h3>
+            </div>
+            <form id="createTimetableForm">
+                <div class="form-group">
+                    <label class="form-label">📚 Timetable Name:</label>
+                    <input type="text" class="form-input" id="timetableName" required placeholder="e.g., Computer Science - 3rd Semester">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">🏢 Department:</label>
+                    <input type="text" class="form-input" id="department" required placeholder="e.g., Computer Science and Engineering">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📖 Program/Course:</label>
+                    <input type="text" class="form-input" id="program" required placeholder="e.g., B.Tech CSE">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📅 Academic Year:</label>
+                    <input type="text" class="form-input" id="academicYear" required placeholder="e.g., 2024-25">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📝 Description (Optional):</label>
+                    <textarea class="form-input" id="timetableDescription" rows="3" placeholder="Additional details about this timetable"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-danger" onclick="closeCreateTimetableModal()">❌ Cancel</button>
+                    <button type="submit" class="btn btn-success">✅ Create Timetable</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // Camera QR scan variables
+        let cameraStream = null;
+        let cameraScanActive = false;
+
         // Global variable to store current QR data for validation
         let currentQRData = null;
+
+        // Auto-refresh QR code timer
+        let qrRefreshInterval = null;
+
+        // Class management data
+        let classes = [
+            {
+                id: 'default',
+                name: 'Computer Science 101',
+                room: 'Room 205',
+                instructor: 'Dr. Smith',
+                schedule: 'Mon-Wed-Fri 9:00 AM',
+                description: 'Introduction to Programming'
+            }
+        ];
+        let selectedClass = classes[0];
 
         document.addEventListener('DOMContentLoaded', function() {
             try {
@@ -762,6 +1155,16 @@
                         if (targetTab === 'attendance') {
                             fetchAttendance();
                         }
+                            if (targetTab === 'scanning') {
+                                startCameraScan();
+                            } else {
+                                stopCameraScan();
+                            }
+                            if (targetTab === 'qr-generation') {
+                                startAutoQRRefresh();
+                            } else {
+                                stopAutoQRRefresh();
+                            }
                     } catch (error) {
                         console.error('Tab switching error:', error);
                     }
@@ -862,72 +1265,138 @@
         // Update your generateQR function
         async function generateQR() {
             try {
-                const response = await fetch('/api/generate_qr', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                    const response = await fetch('/api/generate_qr', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            class_name: selectedClass.name,
+                            classroom: selectedClass.room,
+                            instructor: selectedClass.instructor
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        showMessage('Error: ' + data.error, 'error');
+                        return;
                     }
-                });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    showMessage('Error: ' + data.error, 'error');
-                    return;
+
+                    const qrUrl = data.qr_url;
+                    const qrData = data.qr_data;
+
+                    // Generate QR Code for the URL
+                    const qr = qrcode(0, 'M');
+                    qr.addData(qrUrl);
+                    qr.make();
+
+                    // Create QR code as image
+                    const qrCodeImg = qr.createImgTag(4, 8);
+
+                    // Find the QR display container
+                    const qrContainer = document.querySelector('.qr-display') || 
+                                       document.getElementById('qrCodeContainer') || 
+                                       document.querySelector('[data-qr-display]');
+
+                    if (qrContainer) {
+                        qrContainer.innerHTML = `
+                            <div style="text-align: center; padding: 20px;">
+                                <h3 style="color: #2E86AB; margin-bottom: 15px;">📱 Scannable QR Code</h3>
+                                <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                    ${qrCodeImg}
+                                </div>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                                    <p><strong>✅ QR Code Generated Successfully!</strong></p>
+                                    <p><strong>QR ID:</strong> ${qrData.id}</p>
+                                    <p><strong>Class:</strong> ${qrData.class_name}</p>
+                                    <p><strong>Room:</strong> ${qrData.classroom}</p>
+                                    <p><strong>Instructor:</strong> ${qrData.instructor}</p>
+                                    <p><strong>⏰ Expires:</strong> ${new Date(qrData.expiry).toLocaleString()}</p>
+                                    <p><strong>Scan this QR code with your phone camera to mark attendance!</strong></p>
+                                    <p style="word-break:break-all; font-size:0.9em; color:#888;">${qrUrl}</p>
+                                    <div id="qrCountdown" style="background: #e8f4f8; padding: 10px; border-radius: 5px; margin-top: 10px; text-align: center; font-weight: bold; color: #2E86AB;">
+                                        New QR code in: <span id="countdownTimer">10</span> seconds
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    window.currentQRData = qrData;
+                    showMessage('QR Code generated successfully! Students can now scan it.', 'success');
+                } catch (error) {
+                    showMessage('Error generating QR code: ' + error.message, 'error');
+                    console.error('QR Generation Error:', error);
                 }
-                
-                const qrData = data.qr_data;
-                
-                // Generate QR Code using qrcode-generator library
-                const qr = qrcode(0, 'M');
-                qr.addData(JSON.stringify(qrData));
-                qr.make();
-                
-                // Create QR code as image
-                const qrCodeImg = qr.createImgTag(4, 8);
-                
-                // Find the QR display container
-                const qrContainer = document.querySelector('.qr-display') || 
-                                   document.getElementById('qrCodeContainer') || 
-                                   document.querySelector('[data-qr-display]');
-                
-                if (qrContainer) {
-                    qrContainer.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            <h3 style="color: #2E86AB; margin-bottom: 15px;">📱 Scannable QR Code</h3>
-                            <div style="background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                                ${qrCodeImg}
-                            </div>
-                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                                <p><strong>✅ QR Code Generated Successfully!</strong></p>
-                                <p><strong>QR ID:</strong> ${qrData.id}</p>
-                                <p><strong>Class:</strong> ${qrData.class_name}</p>
-                                <p><strong>Room:</strong> ${qrData.classroom}</p>
-                                <p><strong>Instructor:</strong> ${qrData.instructor}</p>
-                                <p><strong>⏰ Expires:</strong> ${new Date(qrData.expiry).toLocaleString()}</p>
-                            </div>
-                            <div style="margin-top: 15px; padding: 10px; background: #e8f4f8; border-radius: 5px;">
-                                <small><strong>📲 Students can scan this QR code with their phones to mark attendance!</strong></small>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                // Store QR data globally for manual entry
-                window.currentQRData = qrData;
-                
-                showMessage('QR Code generated successfully! Students can now scan it.', 'success');
-                
-            } catch (error) {
-                showMessage('Error generating QR code: ' + error.message, 'error');
-                console.error('QR Generation Error:', error);
-            }
         }
 
         // Helper function to show messages
         function showMessage(message, type) {
             // You can implement this based on your existing message system
             console.log(`${type}: ${message}`);
+        }
+
+        // Auto QR refresh functions
+        function startAutoQRRefresh() {
+            // Generate initial QR code
+            generateQR();
+            // Set up auto-refresh every 15 seconds
+            if (qrRefreshInterval) {
+                clearInterval(qrRefreshInterval);
+            }
+            qrRefreshInterval = setInterval(() => {
+                generateQR();
+                console.log('QR code auto-refreshed');
+            }, 10000); // 10 seconds
+            
+            // Start countdown timer
+            startCountdownTimer();
+        }
+
+        function stopAutoQRRefresh() {
+            if (qrRefreshInterval) {
+                clearInterval(qrRefreshInterval);
+                qrRefreshInterval = null;
+            }
+            stopCountdownTimer();
+        }
+
+        // Countdown timer variables
+        let countdownInterval = null;
+        let countdownSeconds = 10;
+
+        function startCountdownTimer() {
+            countdownSeconds = 10;
+            updateCountdownDisplay();
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            countdownInterval = setInterval(() => {
+                countdownSeconds--;
+                updateCountdownDisplay();
+                
+                if (countdownSeconds <= 0) {
+                    countdownSeconds = 10; // Reset for next cycle
+                }
+            }, 1000);
+        }
+
+        function stopCountdownTimer() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+        }
+
+        function updateCountdownDisplay() {
+            const timerElement = document.getElementById('countdownTimer');
+            if (timerElement) {
+                timerElement.textContent = countdownSeconds;
+            }
         }
 
         async function handleQRImage(event) {
@@ -966,6 +1435,83 @@
             };
             reader.readAsDataURL(file);
         }
+
+            // Camera QR scanning logic
+            function startCameraScan() {
+                const container = document.getElementById('cameraScanContainer');
+                container.style.display = 'block';
+                cameraScanActive = true;
+                const video = document.getElementById('qrVideo');
+                const canvas = document.getElementById('qrCanvas');
+                const status = document.getElementById('cameraScanStatus');
+                status.textContent = 'Starting camera...';
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                    .then(stream => {
+                        cameraStream = stream;
+                        video.srcObject = stream;
+                        video.setAttribute('playsinline', true);
+                        video.play();
+                        status.textContent = 'Point your camera at the QR code.';
+                        scanCameraFrame();
+                    })
+                    .catch(err => {
+                        status.textContent = 'Camera access denied or unavailable.';
+                    });
+            }
+
+            function stopCameraScan() {
+                cameraScanActive = false;
+                const container = document.getElementById('cameraScanContainer');
+                container.style.display = 'none';
+                const status = document.getElementById('cameraScanStatus');
+                status.textContent = '';
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraStream = null;
+                }
+            }
+
+            function scanCameraFrame() {
+                if (!cameraScanActive) return;
+                const video = document.getElementById('qrVideo');
+                const canvas = document.getElementById('qrCanvas');
+                const status = document.getElementById('cameraScanStatus');
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    if (code) {
+                        try {
+                            const qrData = JSON.parse(code.data);
+                            status.textContent = 'QR code detected!';
+                            stopCameraScan();
+                            promptStudentInfo(qrData.id);
+                            return;
+                        } catch (err) {
+                            status.textContent = 'Invalid QR code format.';
+                        }
+                    }
+                }
+                setTimeout(scanCameraFrame, 300);
+            }
+
+            function promptStudentInfo(qrId) {
+                // Simple prompt for demo; replace with modal for production
+                const studentId = prompt('Enter your Student ID:');
+                if (!studentId) {
+                    showErrorMessage('Student ID required.');
+                    return;
+                }
+                const studentName = prompt('Enter your Name:');
+                if (!studentName) {
+                    showErrorMessage('Student Name required.');
+                    return;
+                }
+                recordAttendance(studentId, studentName, 'qr', qrId);
+            }
         
         async function recordAttendance(studentId, studentName, method, qrId = null) {
             try {
@@ -1067,6 +1613,1123 @@
                 }
             }
         }
+
+        // Class Management Functions
+        function showAddClassModal() {
+            const modal = document.getElementById('addClassModal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.getElementById('className').focus();
+            }
+        }
+
+        function closeAddClassModal() {
+            const modal = document.getElementById('addClassModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('addClassForm').reset();
+            }
+        }
+
+        function addNewClass() {
+            const className = document.getElementById('className').value;
+            const roomNumber = document.getElementById('roomNumber').value;
+            const instructorName = document.getElementById('instructorName').value;
+            const classSchedule = document.getElementById('classSchedule').value;
+            const classDescription = document.getElementById('classDescription').value;
+
+            if (className && roomNumber && instructorName && classSchedule) {
+                const newClass = {
+                    id: 'class_' + Date.now(),
+                    name: className,
+                    room: roomNumber,
+                    instructor: instructorName,
+                    schedule: classSchedule,
+                    description: classDescription || ''
+                };
+
+                classes.push(newClass);
+                refreshClassList();
+                closeAddClassModal();
+                showSuccessMessage('Class added successfully!');
+            } else {
+                showErrorMessage('Please fill in all required fields.');
+            }
+        }
+
+        function refreshClassList() {
+            const tableBody = document.getElementById('classTableBody');
+            if (!tableBody) return;
+
+            tableBody.innerHTML = '';
+            
+            classes.forEach(cls => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cls.name}</td>
+                    <td>${cls.room}</td>
+                    <td>${cls.instructor}</td>
+                    <td>${cls.schedule}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editClass('${cls.id}')" style="padding: 5px 10px; margin: 2px;">Edit</button>
+                        <button class="btn btn-primary" onclick="selectClass('${cls.id}')" style="padding: 5px 10px; margin: 2px;">Select</button>
+                        ${cls.id !== 'default' ? `<button class="btn btn-danger" onclick="deleteClass('${cls.id}')" style="padding: 5px 10px; margin: 2px;">Delete</button>` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function selectClass(classId) {
+            const cls = classes.find(c => c.id === classId);
+            if (cls) {
+                selectedClass = cls;
+                updateClassInfo();
+                showSuccessMessage(`Selected class: ${cls.name}`);
+                
+                // Switch to QR generation tab
+                switchTab('qr-generation');
+            }
+        }
+
+        function updateClassInfo() {
+            // Update the class information display in QR generation tab
+            const infoItems = document.querySelectorAll('.info-item span:last-child');
+            if (infoItems.length >= 3) {
+                infoItems[0].textContent = selectedClass.name;
+                infoItems[1].textContent = selectedClass.room;
+                infoItems[2].textContent = selectedClass.instructor;
+            }
+        }
+
+        function editClass(classId) {
+            const cls = classes.find(c => c.id === classId);
+            if (cls) {
+                // Fill the form with existing data
+                document.getElementById('className').value = cls.name;
+                document.getElementById('roomNumber').value = cls.room;
+                document.getElementById('instructorName').value = cls.instructor;
+                document.getElementById('classSchedule').value = cls.schedule;
+                document.getElementById('classDescription').value = cls.description || '';
+                
+                // Show modal and update the form behavior
+                showAddClassModal();
+                
+                // Change the form submission to update instead of add
+                const form = document.getElementById('addClassForm');
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    updateClass(classId);
+                };
+                
+                // Change button text
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.textContent = '✅ Update Class';
+            }
+        }
+
+        function updateClass(classId) {
+            const cls = classes.find(c => c.id === classId);
+            if (cls) {
+                cls.name = document.getElementById('className').value;
+                cls.room = document.getElementById('roomNumber').value;
+                cls.instructor = document.getElementById('instructorName').value;
+                cls.schedule = document.getElementById('classSchedule').value;
+                cls.description = document.getElementById('classDescription').value || '';
+                
+                refreshClassList();
+                closeAddClassModal();
+                showSuccessMessage('Class updated successfully!');
+                
+                // Save updated timetable to backend if this class is in current timetable
+                if (currentTimetable) {
+                    saveTimetableToBackend();
+                }
+                
+                // Reset form behavior
+                const form = document.getElementById('addClassForm');
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    addNewClass();
+                };
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.textContent = '✅ Add Class';
+                
+                // Update info if this is the selected class
+                if (selectedClass.id === classId) {
+                    updateClassInfo();
+                }
+            }
+        }
+
+        function deleteClass(classId) {
+            if (classId === 'default') {
+                showErrorMessage('Cannot delete the default class.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this class?')) {
+                classes = classes.filter(c => c.id !== classId);
+                refreshClassList();
+                showSuccessMessage('Class deleted successfully!');
+                
+                // If deleted class was selected, select the default one
+                if (selectedClass.id === classId) {
+                    selectClass('default');
+                }
+            }
+        }
+
+        // Add form submission handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const addClassForm = document.getElementById('addClassForm');
+            if (addClassForm) {
+                addClassForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addNewClass();
+                });
+            }
+            
+            const createTimetableForm = document.getElementById('createTimetableForm');
+            if (createTimetableForm) {
+                createTimetableForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    createNewTimetable();
+                });
+            }
+            
+            // Load existing timetables
+            loadTimetableList();
+        });
+
+        // Timetable Management
+        let timetables = {};
+        let currentTimetable = null;
+        let editMode = false;
+
+        const timeSlots = ['8:30-9:30', '9:30-10:30', '10:30-10:45', '10:45-11:45', '11:45-12:45', '12:45-1:30', '1:30-2:30', '2:30-3:30', '3:30-4:30', '4:30-5:30'];
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        function showCreateTimetableModal() {
+            const modal = document.getElementById('createTimetableModal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.getElementById('timetableName').focus();
+            }
+        }
+
+        function closeCreateTimetableModal() {
+            const modal = document.getElementById('createTimetableModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('createTimetableForm').reset();
+            }
+        }
+
+        function createNewTimetable() {
+            const name = document.getElementById('timetableName').value;
+            const department = document.getElementById('department').value;
+            const program = document.getElementById('program').value;
+            const academicYear = document.getElementById('academicYear').value;
+            const description = document.getElementById('timetableDescription').value;
+
+            if (name && department && program && academicYear) {
+                const timetableId = 'timetable_' + Date.now();
+                
+                // Create empty timetable structure
+                const newTimetable = {
+                    id: timetableId,
+                    name: name,
+                    department: department,
+                    program: program,
+                    academicYear: academicYear,
+                    description: description,
+                    schedule: {}
+                };
+
+                // Initialize empty schedule
+                days.forEach(day => {
+                    newTimetable.schedule[day] = {};
+                    timeSlots.forEach(slot => {
+                        newTimetable.schedule[day][slot] = {
+                            subject: '',
+                            teacher: '',
+                            room: '',
+                            type: 'lecture' // lecture, lab, break, etc.
+                        };
+                    });
+                });
+
+                // Add breaks
+                days.forEach(day => {
+                    // Tea break
+                    newTimetable.schedule[day]['10:30-10:45'] = {
+                        subject: 'TEA BREAK',
+                        teacher: '',
+                        room: '',
+                        type: 'break'
+                    };
+                    // Lunch break
+                    newTimetable.schedule[day]['12:45-1:30'] = {
+                        subject: 'LUNCH BREAK',
+                        teacher: '',
+                        room: '',
+                        type: 'break'
+                    };
+                });
+
+                timetables[timetableId] = newTimetable;
+                
+                // Save to backend
+                fetch('/api/timetables', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newTimetable)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showErrorMessage('Error saving timetable: ' + data.error);
+                    } else {
+                        loadTimetableList();
+                        closeCreateTimetableModal();
+                        showSuccessMessage('Timetable created and saved successfully!');
+                        
+                        // Auto-select the new timetable
+                        document.getElementById('timetableSelector').value = timetableId;
+                        loadSelectedTimetable();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving timetable:', error);
+                    showErrorMessage('Failed to save timetable');
+                });
+            } else {
+                showErrorMessage('Please fill in all required fields.');
+            }
+        }
+
+        function loadTimetableList() {
+            // Load from backend
+            fetch('/api/timetables')
+                .then(response => response.json())
+                .then(data => {
+                    timetables = data;
+                    updateTimetableSelector();
+                })
+                .catch(error => {
+                    console.error('Error loading timetables:', error);
+                    // Fall back to localStorage
+                    loadTimetablesFromStorage();
+                    updateTimetableSelector();
+                });
+        }
+
+        function updateTimetableSelector() {
+            const selector = document.getElementById('timetableSelector');
+            const teacherSelect = document.getElementById('teacherTimetableSelect');
+            
+            if (selector) {
+                // Clear existing options except the first one
+                selector.innerHTML = '<option value="">Select Timetable</option>';
+                
+                Object.values(timetables).forEach(timetable => {
+                    const option = document.createElement('option');
+                    option.value = timetable.id;
+                    option.textContent = `${timetable.name} (${timetable.department})`;
+                    selector.appendChild(option);
+                });
+            }
+            
+            // Also update teacher timetable selector
+            if (teacherSelect) {
+                teacherSelect.innerHTML = '<option value="">Choose a timetable...</option>';
+                
+                Object.values(timetables).forEach(timetable => {
+                    const teacherOption = document.createElement('option');
+                    teacherOption.value = timetable.id;
+                    teacherOption.textContent = `${timetable.name} (${timetable.department || 'N/A'})`;
+                    teacherSelect.appendChild(teacherOption);
+                });
+            }
+        }
+
+        function loadSelectedTimetable() {
+            const selector = document.getElementById('timetableSelector');
+            const timetableId = selector.value;
+            
+            if (!timetableId || !timetables[timetableId]) {
+                document.getElementById('timetableTitle').textContent = '📋 Select a Timetable to View';
+                document.getElementById('timetableBody').innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 40px;">Select a timetable from the dropdown above</td></tr>';
+                hideEditButtons();
+                return;
+            }
+
+            currentTimetable = timetables[timetableId];
+            document.getElementById('timetableTitle').textContent = `📋 ${currentTimetable.name}`;
+            renderTimetable();
+            showEditButtons();
+        }
+
+        function renderTimetable() {
+            if (!currentTimetable) return;
+
+            const tbody = document.getElementById('timetableBody');
+            tbody.innerHTML = '';
+
+            days.forEach(day => {
+                const row = document.createElement('tr');
+                
+                // Day column
+                const dayCell = document.createElement('td');
+                dayCell.innerHTML = `<strong>${day}</strong>`;
+                dayCell.style.backgroundColor = '#f8f9fa';
+                dayCell.style.fontWeight = 'bold';
+                row.appendChild(dayCell);
+
+                // Time slots
+                timeSlots.forEach(slot => {
+                    const cell = document.createElement('td');
+                    const schedule = currentTimetable.schedule[day][slot];
+                    
+                    if (schedule.type === 'break') {
+                        if (schedule.subject === 'TEA BREAK') {
+                            cell.innerHTML = `<div style="background: #F39C12; color: white; padding: 5px; border-radius: 3px; text-align: center; font-weight: bold;">${schedule.subject}</div>`;
+                        } else {
+                            cell.innerHTML = `<div style="background: #FF6B6B; color: white; padding: 5px; border-radius: 3px; text-align: center; font-weight: bold;">${schedule.subject}</div>`;
+                        }
+                    } else {
+                        cell.innerHTML = `
+                            <div class="schedule-cell" data-day="${day}" data-slot="${slot}" style="cursor: pointer; padding: 5px; border-radius: 3px; ${schedule.subject ? 'background: #e8f4f8;' : 'background: #f9f9f9;'}">
+                                <div style="font-weight: bold; color: #2E86AB;">${schedule.subject || 'Free'}</div>
+                                ${schedule.teacher ? `<div style="font-size: 0.8em; color: #666;">${schedule.teacher}</div>` : ''}
+                                ${schedule.room ? `<div style="font-size: 0.8em; color: #888;">${schedule.room}</div>` : ''}
+                            </div>
+                        `;
+                    }
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            if (editMode) {
+                makeEditable();
+            }
+        }
+
+        function showEditButtons() {
+            document.getElementById('editModeBtn').style.display = 'inline-block';
+        }
+
+        function hideEditButtons() {
+            document.getElementById('editModeBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        function editTimetableCell() {
+            editMode = true;
+            document.getElementById('editModeBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'inline-block';
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+            makeEditable();
+            showSuccessMessage('Edit mode enabled. Click on cells to edit them.');
+        }
+
+        function makeEditable() {
+            const cells = document.querySelectorAll('.schedule-cell');
+            cells.forEach(cell => {
+                cell.addEventListener('click', function() {
+                    if (!editMode) return;
+                    
+                    const day = this.dataset.day;
+                    const slot = this.dataset.slot;
+                    const schedule = currentTimetable.schedule[day][slot];
+                    
+                    const subject = prompt('Enter Subject:', schedule.subject);
+                    if (subject !== null) {
+                        const teacher = prompt('Enter Teacher:', schedule.teacher);
+                        if (teacher !== null) {
+                            const room = prompt('Enter Room:', schedule.room);
+                            if (room !== null) {
+                                schedule.subject = subject;
+                                schedule.teacher = teacher;
+                                schedule.room = room;
+                                renderTimetable();
+                                saveTimetableToBackend(); // Auto-save to backend
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function saveTimetable() {
+            editMode = false;
+            document.getElementById('editModeBtn').style.display = 'inline-block';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'none';
+            renderTimetable();
+            
+            // Save to backend
+            if (currentTimetable) {
+                fetch('/api/timetables', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(currentTimetable)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showErrorMessage('Error saving timetable: ' + data.error);
+                    } else {
+                        showSuccessMessage('Timetable saved successfully!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving timetable:', error);
+                    showErrorMessage('Failed to save timetable');
+                });
+            }
+        }
+
+        function cancelEdit() {
+            editMode = false;
+            document.getElementById('editModeBtn').style.display = 'inline-block';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'none';
+            renderTimetable();
+            showErrorMessage('Edit cancelled.');
+        }
+
+        // Load timetables from localStorage on page load
+        function loadTimetablesFromStorage() {
+            const stored = localStorage.getItem('timetables');
+            if (stored) {
+                timetables = JSON.parse(stored);
+            }
+        }
+
+        // Helper function to save current timetable to backend
+        function saveTimetableToBackend() {
+            if (!currentTimetable) return;
+            
+            fetch('/api/timetables', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(currentTimetable)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error saving timetable:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving timetable:', error);
+            });
+        }
+
+        // Initialize with sample data if no timetables exist
+        function initializeSampleTimetable() {
+            if (Object.keys(timetables).length === 0) {
+                const sampleId = 'aiml_5th_sem_316';
+                timetables[sampleId] = {
+                    id: sampleId,
+                    name: 'AIML - 5th sem [room-316]',
+                    department: 'Computer Science and Engineering',
+                    program: 'B.Tech AIML',
+                    academicYear: '2024-25',
+                    description: 'AIML 5th Semester Timetable - Room 316',
+                    schedule: {
+                        monday: {
+                            '8:30-9:30': { subject: 'Research methodology and IPR', teacher: 'Prof.Meghanendra(N6)', room: '316', type: 'lecture' },
+                            '9:30-10:30': { subject: 'Theory of Computations', teacher: 'Prof.Sriram Pal', room: '316', type: 'lecture' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'Software Engineering', teacher: 'Prof.Jyothi Naranjana', room: '316', type: 'lecture' },
+                            '11:45-12:45': { subject: 'Computer Networks', teacher: 'Prof.Dhivanis MV', room: '316', type: 'lecture' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '2:30-3:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '3:30-4:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '4:30-5:30': { subject: 'Free', teacher: '', room: '', type: 'free' }
+                        },
+                        tuesday: {
+                            '8:30-9:30': { subject: 'Theory of Computations', teacher: 'Prof.Sriram Pal', room: '316', type: 'lecture' },
+                            '9:30-10:30': { subject: 'Research methodology and IPR', teacher: 'Prof.Meghanendra', room: '316', type: 'lecture' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'Computer Vision', teacher: 'Dr.S.P Pradeep Kumar', room: '316', type: 'lecture' },
+                            '11:45-12:45': { subject: 'Software Engineering', teacher: 'Prof.Jyothi Naranjana', room: '316', type: 'lecture' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Environmental studies and E-Waste management', teacher: 'Prof.Priyanka CKN', room: '316', type: 'lecture' },
+                            '2:30-3:30': { subject: 'Data Visualization', teacher: 'Prof.Nihamai M', room: '316', type: 'lecture' },
+                            '3:30-4:30': { subject: 'lab', teacher: '', room: '316', type: 'lab' },
+                            '4:30-5:30': { subject: 'lab', teacher: '', room: '316', type: 'lab' }
+                        },
+                        wednesday: {
+                            '8:30-9:30': { subject: 'Computer Vision', teacher: 'Dr.S.P Pradeep Kumar', room: '316', type: 'lecture' },
+                            '9:30-10:30': { subject: 'Computer Networks', teacher: 'Prof.Dhivanis MV', room: '316', type: 'lecture' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'Software Engineering', teacher: 'Prof.Jyothi Naranjana', room: '316', type: 'lecture' },
+                            '11:45-12:45': { subject: 'Theory of Computations', teacher: 'Prof.Sriram Pal', room: '316', type: 'lecture' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '2:30-3:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '3:30-4:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '4:30-5:30': { subject: 'Free', teacher: '', room: '', type: 'free' }
+                        },
+                        thursday: {
+                            '8:30-9:30': { subject: 'lab', teacher: '', room: '316', type: 'lab' },
+                            '9:30-10:30': { subject: 'lab', teacher: '', room: '316', type: 'lab' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'Computer vision', teacher: 'Dr.S.P Pradeep Kumar', room: '316', type: 'lecture' },
+                            '11:45-12:45': { subject: 'Computer Networks', teacher: 'Prof.Dhivanis MV', room: '316', type: 'lecture' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '2:30-3:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '3:30-4:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '4:30-5:30': { subject: 'Free', teacher: '', room: '', type: 'free' }
+                        },
+                        friday: {
+                            '8:30-9:30': { subject: 'Software Engineering', teacher: 'Prof.Jyothi Naranjana', room: '316', type: 'lecture' },
+                            '9:30-10:30': { subject: 'Research methodology and IPR', teacher: 'Prof.Meghanendra', room: '316', type: 'lecture' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'lab', teacher: '', room: '316', type: 'lab' },
+                            '11:45-12:45': { subject: 'lab', teacher: '', room: '316', type: 'lab' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '2:30-3:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '3:30-4:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '4:30-5:30': { subject: 'Free', teacher: '', room: '', type: 'free' }
+                        },
+                        saturday: {
+                            '8:30-9:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '9:30-10:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '10:30-10:45': { subject: 'TEA BREAK', teacher: '', room: '', type: 'break' },
+                            '10:45-11:45': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '11:45-12:45': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '12:45-1:30': { subject: 'LUNCH BREAK', teacher: '', room: '', type: 'break' },
+                            '1:30-2:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '2:30-3:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '3:30-4:30': { subject: 'Free', teacher: '', room: '', type: 'free' },
+                            '4:30-5:30': { subject: 'Free', teacher: '', room: '', type: 'free' }
+                        }
+                    }
+                };
+
+                // Save to backend
+                fetch('/api/timetables', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(timetables[sampleId])
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        console.log('Default AIML timetable saved successfully');
+                        updateTimetableSelector();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving default timetable:', error);
+                });
+            }
+        }
+
+        // Smart Teaching Functions
+        let currentSelectedTimetable = null;
+        let currentClassData = null;
+
+        function loadCurrentClass() {
+            const timetableSelect = document.getElementById('teacherTimetableSelect');
+            const selectedTimetableId = timetableSelect.value;
+            
+            if (!selectedTimetableId) {
+                document.getElementById('currentClassInfo').innerHTML = 
+                    '<div style="text-align: center; padding: 20px;"><p>Select a timetable to see current class information</p></div>';
+                document.getElementById('generateTimetableQR').disabled = true;
+                document.getElementById('timetableQRSection').style.display = 'none';
+                return;
+            }
+
+            currentSelectedTimetable = selectedTimetableId;
+
+            fetch('/api/current_class', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ timetable_id: selectedTimetableId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayCurrentClass(data);
+            })
+            .catch(error => {
+                console.error('Error fetching current class:', error);
+                showErrorMessage('Failed to load current class information');
+            });
+        }
+
+        function displayCurrentClass(data) {
+            const currentClassInfo = document.getElementById('currentClassInfo');
+            const generateBtn = document.getElementById('generateTimetableQR');
+            
+            if (data.is_break) {
+                currentClassInfo.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #FF9500, #FF6B35); color: white; border-radius: 10px;">
+                        <h4>☕ Break Time</h4>
+                        <p>${data.message}</p>
+                        <p><strong>Current time:</strong> ${new Date().toLocaleTimeString()}</p>
+                    </div>
+                `;
+                generateBtn.disabled = true;
+                currentClassData = null;
+            } else if (data.class_info) {
+                currentClassData = data;
+                currentClassInfo.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #2ECC71, #27AE60); color: white; padding: 20px; border-radius: 10px;">
+                        <h4>📚 Current Class Active</h4>
+                        <div style="margin: 10px 0;"><strong>Subject:</strong> ${data.class_info.subject}</div>
+                        <div style="margin: 10px 0;"><strong>Teacher:</strong> ${data.class_info.teacher || 'Not specified'}</div>
+                        <div style="margin: 10px 0;"><strong>Room:</strong> ${data.class_info.room || 'Not specified'}</div>
+                        <div style="margin: 10px 0;"><strong>Day:</strong> ${data.day.charAt(0).toUpperCase() + data.day.slice(1)}</div>
+                        <div style="margin: 10px 0;"><strong>Time Slot:</strong> ${getTimeSlotLabel(data.slot)}</div>
+                        <div style="margin: 10px 0;"><strong>Current time:</strong> ${new Date().toLocaleTimeString()}</div>
+                    </div>
+                `;
+                generateBtn.disabled = false;
+            } else {
+                currentClassInfo.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #95A5A6, #7F8C8D); color: white; border-radius: 10px;">
+                        <h4>🕒 No Class Scheduled</h4>
+                        <p>${data.message}</p>
+                        <p><strong>Current time:</strong> ${new Date().toLocaleTimeString()}</p>
+                    </div>
+                `;
+                generateBtn.disabled = true;
+                currentClassData = null;
+            }
+        }
+
+        function getTimeSlotLabel(slotIndex) {
+            const timeSlots = [
+                '8:30-9:30', '9:30-10:30', '10:45-11:45', '11:45-12:45',
+                '1:30-2:30', '2:30-3:30', '3:30-4:30', '4:30-5:30'
+            ];
+            return timeSlots[slotIndex] || 'Unknown';
+        }
+
+        function refreshCurrentClass() {
+            if (currentSelectedTimetable) {
+                loadCurrentClass();
+                showSuccessMessage('Current class information refreshed!');
+            } else {
+                showErrorMessage('Please select a timetable first');
+            }
+        }
+
+        function generateFromTimetable() {
+            if (!currentClassData) {
+                showErrorMessage('No current class to generate QR for');
+                return;
+            }
+
+            const classInfo = currentClassData.class_info;
+            const qrData = {
+                class_name: `${classInfo.subject} - ${currentClassData.day.charAt(0).toUpperCase() + currentClassData.day.slice(1)}`,
+                classroom: classInfo.room || 'Room not specified',
+                instructor: classInfo.teacher || 'Teacher not specified',
+                subject: classInfo.subject,
+                time_slot: getTimeSlotLabel(currentClassData.slot),
+                day: currentClassData.day,
+                timetable_id: currentClassData.timetable_id
+            };
+
+            fetch('/api/generate_qr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(qrData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showErrorMessage('Error: ' + data.error);
+                } else {
+                    displayTimetableQR(data, qrData);
+                    showSuccessMessage('QR Code generated for current class!');
+                }
+            })
+            .catch(error => {
+                console.error('Error generating QR:', error);
+                showErrorMessage('Failed to generate QR code');
+            });
+        }
+
+        function displayTimetableQR(qrResponse, classData) {
+            // Show class details
+            document.getElementById('selectedClassDetails').innerHTML = `
+                <div class="info-item"><span class="info-label">📚 Subject:</span> <span>${classData.subject}</span></div>
+                <div class="info-item"><span class="info-label">👨‍🏫 Teacher:</span> <span>${classData.instructor}</span></div>
+                <div class="info-item"><span class="info-label">🚪 Room:</span> <span>${classData.classroom}</span></div>
+                <div class="info-item"><span class="info-label">📅 Day:</span> <span>${classData.day.charAt(0).toUpperCase() + classData.day.slice(1)}</span></div>
+                <div class="info-item"><span class="info-label">🕒 Time:</span> <span>${classData.time_slot}</span></div>
+                <div class="info-item"><span class="info-label">⏰ Generated:</span> <span>${new Date().toLocaleString()}</span></div>
+                <div class="info-item"><span class="info-label">⚡ Expires:</span> <span>${new Date(qrResponse.qr_data.expiry).toLocaleString()}</span></div>
+            `;
+
+            // Generate QR code using QRCode.js
+            document.getElementById('timetableQRCodeContainer').innerHTML = '<div id="timetableQRCode"></div>';
+            QRCode.toCanvas(document.getElementById('timetableQRCode'), qrResponse.qr_url, function (error) {
+                if (error) {
+                    console.error(error);
+                    showErrorMessage('Failed to generate QR code');
+                } else {
+                    console.log('QR code generated successfully');
+                }
+            });
+
+            // Show the QR section
+            document.getElementById('timetableQRSection').style.display = 'block';
+
+            // Set up auto-refresh
+            if (window.timetableQRInterval) {
+                clearInterval(window.timetableQRInterval);
+            }
+            
+            window.timetableQRInterval = setInterval(() => {
+                generateFromTimetable();
+            }, 10000); // Refresh every 10 seconds
+        }
+
+        function loadTeacherTimetableList() {
+            const select = document.getElementById('teacherTimetableSelect');
+            
+            fetch('/api/timetables')
+            .then(response => response.json())
+            .then(data => {
+                select.innerHTML = '<option value="">Choose a timetable...</option>';
+                
+                Object.values(data).forEach(timetable => {
+                    const option = document.createElement('option');
+                    option.value = timetable.id;
+                    option.textContent = `${timetable.name} (${timetable.department})`;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading timetables:', error);
+                showErrorMessage('Failed to load timetables');
+            });
+        }
+
+        // AIML Class Management Functions
+        let aimlClasses = {};
+
+        function initializeAIMLClasses() {
+            const defaultClasses = {
+                'research_methodology': {
+                    id: 'research_methodology',
+                    subject: 'Research methodology and IPR',
+                    instructor: 'Prof.Meghanendra(N6)',
+                    description: 'Research methods and Intellectual Property Rights',
+                    credits: 3,
+                    type: 'theory',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'theory_of_computations': {
+                    id: 'theory_of_computations',
+                    subject: 'Theory of Computations',
+                    instructor: 'Prof.Sriram Pal',
+                    description: 'Formal languages, automata theory, and computational complexity',
+                    credits: 4,
+                    type: 'theory',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'software_engineering': {
+                    id: 'software_engineering',
+                    subject: 'Software Engineering',
+                    instructor: 'Prof.Jyothi Naranjana',
+                    description: 'Software development lifecycle and engineering practices',
+                    credits: 3,
+                    type: 'theory',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'computer_networks': {
+                    id: 'computer_networks',
+                    subject: 'Computer Networks',
+                    instructor: 'Prof.Dhivanis MV',
+                    description: 'Network protocols, architectures, and communication systems',
+                    credits: 4,
+                    type: 'theory',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'computer_vision': {
+                    id: 'computer_vision',
+                    subject: 'Computer Vision',
+                    instructor: 'Dr.S.P Pradeep Kumar',
+                    description: 'Image processing, pattern recognition, and machine vision',
+                    credits: 4,
+                    type: 'both',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'environmental_studies': {
+                    id: 'environmental_studies',
+                    subject: 'Environmental studies and E-Waste management',
+                    instructor: 'Prof.Priyanka CKN',
+                    description: 'Environmental science and electronic waste management',
+                    credits: 2,
+                    type: 'theory',
+                    timetable_id: 'aiml_5th_sem_316'
+                },
+                'data_visualization': {
+                    id: 'data_visualization',
+                    subject: 'Data Visualization',
+                    instructor: 'Prof.Nihamai M',
+                    description: 'Visual representation of data and information design',
+                    credits: 3,
+                    type: 'both',
+                    timetable_id: 'aiml_5th_sem_316'
+                }
+            };
+
+            // Save each class to backend
+            Object.values(defaultClasses).forEach(classData => {
+                fetch('/api/classes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(classData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error saving class:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving class:', error);
+                });
+            });
+
+            // Update local storage
+            aimlClasses = defaultClasses;
+            updateAIMLClassTable();
+            updateAIMLStatistics();
+            showSuccessMessage('AIML classes initialized successfully!');
+        }
+
+        function loadAIMLClasses() {
+            fetch('/api/classes/timetable/aiml_5th_sem_316')
+            .then(response => response.json())
+            .then(data => {
+                aimlClasses = data;
+                updateAIMLClassTable();
+                updateAIMLStatistics();
+            })
+            .catch(error => {
+                console.error('Error loading AIML classes:', error);
+                showErrorMessage('Failed to load AIML classes');
+            });
+        }
+
+        function updateAIMLClassTable() {
+            const tbody = document.getElementById('aimlClassTableBody');
+            if (!tbody) return;
+
+            if (Object.keys(aimlClasses).length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px;">
+                            No AIML classes found. Click "Initialize Classes" to create them.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = Object.values(aimlClasses).map(classData => `
+                <tr>
+                    <td><strong>${classData.subject}</strong></td>
+                    <td>${classData.instructor}</td>
+                    <td>${classData.description}</td>
+                    <td>${classData.credits} Credits</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editAIMLClass('${classData.id}')" style="padding: 5px 10px; margin: 2px;">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteAIMLClass('${classData.id}')" style="padding: 5px 10px; margin: 2px;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAIMLStatistics() {
+            const totalElement = document.getElementById('totalAIMLClasses');
+            const todayElement = document.getElementById('todayAIMLClasses');
+            const weekElement = document.getElementById('weekAIMLClasses');
+
+            if (totalElement) totalElement.textContent = Object.keys(aimlClasses).length;
+            if (todayElement) todayElement.textContent = Object.keys(aimlClasses).length; // All classes are active
+            if (weekElement) weekElement.textContent = Object.keys(aimlClasses).length * 5; // 5 days a week
+        }
+
+        function showAddAIMLClassModal() {
+            const modal = document.getElementById('addAIMLClassModal');
+            modal.style.display = 'flex';
+            
+            // Reset form
+            document.getElementById('addAIMLClassForm').reset();
+        }
+
+        function closeAddAIMLClassModal() {
+            const modal = document.getElementById('addAIMLClassModal');
+            modal.style.display = 'none';
+        }
+
+        function refreshAIMLClassList() {
+            loadAIMLClasses();
+            showSuccessMessage('AIML class list refreshed!');
+        }
+
+        function deleteAIMLClass(classId) {
+            if (confirm('Are you sure you want to delete this class?')) {
+                fetch(`/api/classes/${classId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showErrorMessage('Error: ' + data.error);
+                    } else {
+                        delete aimlClasses[classId];
+                        updateAIMLClassTable();
+                        updateAIMLStatistics();
+                        showSuccessMessage('Class deleted successfully!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting class:', error);
+                    showErrorMessage('Failed to delete class');
+                });
+            }
+        }
+
+        function editAIMLClass(classId) {
+            const classData = aimlClasses[classId];
+            if (!classData) return;
+
+            // Pre-fill the modal with existing data
+            document.getElementById('aimlSubjectName').value = classData.subject;
+            document.getElementById('aimlInstructor').value = classData.instructor;
+            document.getElementById('aimlDescription').value = classData.description;
+            document.getElementById('aimlCredits').value = classData.credits;
+            document.getElementById('aimlSubjectType').value = classData.type;
+
+            // Show modal for editing
+            showAddAIMLClassModal();
+
+            // Change form submission to update instead of create
+            const form = document.getElementById('addAIMLClassForm');
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateAIMLClass(classId);
+            };
+        }
+
+        function updateAIMLClass(classId) {
+            const updatedClass = {
+                id: classId,
+                subject: document.getElementById('aimlSubjectName').value,
+                instructor: document.getElementById('aimlInstructor').value,
+                description: document.getElementById('aimlDescription').value,
+                credits: parseInt(document.getElementById('aimlCredits').value),
+                type: document.getElementById('aimlSubjectType').value,
+                timetable_id: 'aiml_5th_sem_316'
+            };
+
+            fetch('/api/classes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedClass)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showErrorMessage('Error: ' + data.error);
+                } else {
+                    aimlClasses[classId] = updatedClass;
+                    updateAIMLClassTable();
+                    updateAIMLStatistics();
+                    closeAddAIMLClassModal();
+                    showSuccessMessage('Class updated successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating class:', error);
+                showErrorMessage('Failed to update class');
+            });
+        }
+
+        // Handle AIML class form submission
+        document.getElementById('addAIMLClassForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newClass = {
+                id: Date.now().toString(), // Simple ID generation
+                subject: document.getElementById('aimlSubjectName').value,
+                instructor: document.getElementById('aimlInstructor').value,
+                description: document.getElementById('aimlDescription').value,
+                credits: parseInt(document.getElementById('aimlCredits').value),
+                type: document.getElementById('aimlSubjectType').value,
+                timetable_id: 'aiml_5th_sem_316'
+            };
+
+            fetch('/api/classes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newClass)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showErrorMessage('Error: ' + data.error);
+                } else {
+                    aimlClasses[newClass.id] = newClass;
+                    updateAIMLClassTable();
+                    updateAIMLStatistics();
+                    closeAddAIMLClassModal();
+                    showSuccessMessage('AIML class added successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding class:', error);
+                showErrorMessage('Failed to add class');
+            });
+        });
+
+        // Update the document ready function
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTimetablesFromStorage();
+            initializeSampleTimetable();
+            loadTeacherTimetableList(); // Load timetables for smart teaching
+            loadAIMLClasses(); // Load AIML classes
+            // ... existing code ...
+        });
     </script>
 </body>
 </html>

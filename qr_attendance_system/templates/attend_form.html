@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        h2 { color: #2E86AB; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #333; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .btn { width: 100%; padding: 12px; background: #2E86AB; color: #fff; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer; }
+        .btn:hover { background: #1B4F72; }
+        .message { margin: 15px 0; padding: 12px; border-radius: 6px; text-align: center; }
+        .error { background: #E74C3C; color: #fff; }
+        .success { background: #2ECC71; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Mark Attendance</h2>
+        
+        <div id="scanLimitInfo" style="background: #3498DB; color: white; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
+            <span id="scanStatus">Checking scan limit...</span>
+        </div>
+        
+        <div style="background: #FF6B6B; color: white; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
+            <strong>⚠️ IMPORTANT:</strong> Only mark attendance for yourself. Proxy attendance for others is strictly prohibited and will be tracked.
+        </div>
+        
+        {% if error %}
+            <div class="message error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+            <div class="message success">{{ success }}</div>
+        {% endif %}
+        {% if not success %}
+        <form method="post" id="attendanceForm">
+            <div class="form-group">
+                <label for="studentId">USN ID:</label>
+                <input type="text" id="studentId" name="studentId" required>
+            </div>
+            <div class="form-group">
+                <label for="studentName">Name:</label>
+                <input type="text" id="studentName" name="studentName" required>
+            </div>
+            <input type="hidden" name="qrId" value="{{ qr_id }}">
+            <button type="submit" class="btn" id="submitBtn">Mark Attendance</button>
+        </form>
+        {% endif %}
+        
+        <script>
+            // Check scan limit when page loads
+            fetch('/api/check_scan_limit')
+                .then(response => response.json())
+                .then(data => {
+                    const scanStatus = document.getElementById('scanStatus');
+                    const submitBtn = document.getElementById('submitBtn');
+                    const form = document.getElementById('attendanceForm');
+                    
+                    if (data.can_scan) {
+                        if (data.remaining_scans === 1) {
+                            scanStatus.innerHTML = `✅ You can scan 1 QR code. Use it for your own attendance only!`;
+                        } else {
+                            scanStatus.innerHTML = `✅ Ready to scan QR code`;
+                        }
+                        document.getElementById('scanLimitInfo').style.background = '#2ECC71';
+                    } else {
+                        scanStatus.innerHTML = `❌ ${data.message}`;
+                        document.getElementById('scanLimitInfo').style.background = '#E74C3C';
+                        if (submitBtn) submitBtn.disabled = true;
+                        if (form) form.style.opacity = '0.5';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking scan limit:', error);
+                    document.getElementById('scanStatus').innerHTML = '⚠️ Unable to check scan limit';
+                });
+        </script>
+    </div>
+</body>
+</html>
